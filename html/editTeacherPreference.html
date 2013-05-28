@@ -7,9 +7,6 @@
 	
 </head>
 
-<script language="JavaScript" src="js/profileOperations.js" type="text/javascript">
-</script>
-
 <body>
 	<h1>Hired Teachers</h1>
 	<table id="contacts-table">
@@ -53,9 +50,6 @@
 			</div>
 			<div class="item button button-default">
 				<div class="field"><input type="submit" id="contacts-op-save" value="Save" /></div>
-			</div>
-			<div class="item button button-default">
-				<div class="field"><input type="button" id="contacts-op-report" value="Generate Report" onclick="computeMissingList()" /></div>
 			</div>
 		</div>
 		<input type="hidden" name="id_entry" value="0" />
@@ -211,7 +205,7 @@
 	
 	
 	
-<h1>Subtitute Teachers</h1>
+		<h1>Subtitute Teachers</h1>
 	<table id="Substitutes-table">
 		<tr id="Substitutes-head">
 			<th>#</th>
@@ -219,12 +213,9 @@
 			<th>PIN</th>
 			<th>SSN</th>
 			<th>Phone</th>
-			<th>Rating</th>
-			<th>Acceptable Subjects</th>
-			<th>Preferred Subjects</th>
-			<th>Acceptable Grade Levels</th>
-			<th>Preferred Grade Levels</th>
+			<th>Subjects</th>
 			<th>Schools</th>
+			<th>Grade Levels</th>
 			<th>Actions</th>
 		</tr>
 	</table>
@@ -236,41 +227,29 @@
 		</div>
 		<div class="item text">
 			<label>PIN:</label>
-			<div class="field"><input type="text" name="sub_PIN" size=4 /></div>
+			<div class="field"><input type="text" name="sub_PIN" /></div>
 		</div>
 		<div class="item text">
 			<label>SSN:</label>
 			<div class="field"><input type="text" name="sub_SSN" /></div>
 		</div>
-		<div class="item text">
+			<div class="item text">
 			<label>Phone:</label>
 			<div class="field"><input type="text" name="sub_phone" /></div>
 		</div>
+		
 		<div class="item text">
-			<label>Rating:</label>
-			<div class="field"><input type="text" name="sub_rating" /></div> <nbsp><nbsp><i>Options:1,2,3</i>
-		</div>
-		<div class="item text">
-			<label>Acceptable Subjects:</label>
-			<div class="field"><input type="text" name="sub_acceptSubject" /> </div><nbsp><nbsp><i>Options:"Home room", "Science", "Math", "English", "Social Studies", "Physical Ed", and "Arts / Music", "World Language"<i/>
-		</div>
-		<div class="item text">
-			<label>Preferred Subjects:</label>
-			<div class="field"><input type="text" name="sub_prefSubject" /></div> 
-		</div>
-		<div class="item text">
-			<label>Acceptabe Grade Levels:</label>
-			<div class="field"><input type="text" name="sub_acceptGradeLevel" /> </div><nbsp><nbsp><i>Options: K,J,H,A<i/> 
-		</div>
-		<div class="item text">
-			<label>Preferred Grade Levels:</label>
-			<div class="field"><input type="text" name="sub_prefGradeLevel" /> 
+			<label>Subjects:</label>
+			<div class="field"><input type="text" name="sub_subject" /></div>
 		</div>
 		<div class="item text">
 			<label>Schools:</label>
 			<div class="field"><input type="text" name="sub_school" /></div>
 		</div>
-		
+		<div class="item text">
+			<label>Grade levels:</label>
+			<div class="field"><input type="text" name="sub_gradeLevel" /> </div><nbsp><i>Options: K,J,H,A<i/> 
+		</div>
 		<div class="button-wrapper">
 			<div class="item button">
 				<div class="field"><input type="button" id="Substitutes-op-discard" value="Discard" /></div>
@@ -309,12 +288,9 @@
 						sub_PIN: this.sub_PIN.value,
 						sub_SSN: this.sub_SSN.value,
 						sub_phone: this.sub_phone.value,
-						sub_rating: this.sub_rating.value,
-						sub_acceptSubject: this.sub_acceptSubject.value,
-						sub_prefSubject: this.sub_prefSubject.value,
-						sub_acceptGradeLevel: this.sub_acceptGradeLevel.value,
-						sub_prefGradeLevel: this.sub_prefGradeLevel.value,
-						sub_school: this.sub_school.value
+						sub_subject: this.sub_subject.value,
+						sub_school: this.sub_school.value,
+						sub_gradeLevel: this.sub_gradeLevel.value
 					};
 					if (entry.id == 0) { // add
 						Substitutes.storeAdd(entry);
@@ -353,17 +329,14 @@
 					if (/edit|remove/.test(op)) {
 						var entry = JSON.parse(window.localStorage.getItem("Substitutes:"+ event.target.getAttribute("data-id")));
 						if (op == "edit") {
-							Substitutes.$form.id_entry.value = entry.id;
 							Substitutes.$form.sub_name.value = entry.sub_name;
 							Substitutes.$form.sub_SSN.value = entry.sub_SSN;
 							Substitutes.$form.sub_PIN.value = entry.sub_PIN;
 							Substitutes.$form.sub_phone.value = entry.sub_phone;
-							Substitutes.$form.sub_rating.value = entry.sub_rating;
-							Substitutes.$form.sub_acceptSubject.value = entry.sub_acceptSubject;
-							Substitutes.$form.sub_prefSubject.value = entry.sub_prefSubject;
-							Substitutes.$form.sub_acceptGradeLevel.value = entry.sub_acceptGradeLevel;
-							Substitutes.$form.sub_prefGradeLevel.value = entry.sub_prefGradeLevel;
+							Substitutes.$form.sub_subject.value = entry.sub_subject;
 							Substitutes.$form.sub_school.value = entry.sub_school;
+							Substitutes.$form.sub_gradeLevel.value = entry.sub_gradeLevel;
+							Substitutes.$form.id_entry.value = entry.id;
 						}
 						else if (op == "remove") {
 							if (confirm('Are you sure you want to remove "'+ entry.sub_name +' '+ entry.sub_SSN +'" from your Substitutes?')) {

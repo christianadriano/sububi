@@ -25,90 +25,105 @@ subTeacherList[3] = [["Caroline Herschel"], ["Science"], ["A"], ["Pine","Cedar"]
 
 
 
-//File handles the events sent by html pages from Sububi
+//---- Report Function ---------------------------------------
 
+var missingSubjectList = new Array();
+var missingSchoolList = new Array();
+var candidateList = new Array();
 
-
-
-//-------------------------- Search function --------------------------------------------------
-function selectTeachersForSubjectSchoolList(subject, schoolList){
-	console.log("Selecting subs for subject "+ subject+ "in schools: "+schoolList);
-	return new Array();
-}
-
-function searchTeacherByName() {
-    var input = document.getElementById('teacherName');
-    var name = input.value;
-    var registry=new Array();
-    if (name) {
-       registry = searchName(name);
-       display(registry);
-    } else {
-        alert('Please enter a teacher name');
-        input.focus();
-    }
-}
-
-
-function searchName(name){
-	var registryResult = new Array();
+function computeMissingList(){
 	
-	return registry;
-}
-
-function display(registry){}
-
-
-
-
-//------------------------- TEACHER ABSENCE PAGE -----------------------------------------------
-	//Update teacher absence information
-	function saveTeacherAbsence(name, lastname){
-		console.log("Saving Teacher Absence, name: "+name+", last name:"+lastName);		
+	//Clean up the lists
+	missingSubjectList = new Array();
+	missingSchoolList = new Array();
+	
+	
+	if (window.localStorage.length - 1) {
+		var i, key;
+		for (i = 0; i < window.localStorage.length; i++) {
+			key = window.localStorage.key(i);
+			if (/Contacts:\d+/.test(key)) {
+				var jsonStr = JSON.parse(window.localStorage.getItem(key));
+				if(jsonStr.hired_missingClass=="yes"){
+				missingSubjectList[i]=jsonStr.hired_subject;
+					missingSchoolList[i]=jsonStr.hired_school;
+				}
+			}
+		}
+		alert("Missing Subjects: "+missingSubjectList+"\nMissing Schools: "+missingSchoolList);
+		computeSubsMatchList();
 	}
-	
-	function removeTeacherAbsence(name, lastname){
-		console.log("Removing Teacher Absence, name: "+name+", last name:"+lastName);		
-	}
-	
-//------------------------- SUBSTITUTE PREFERENCES PAGE -----------------------------------------------
+} 
 
-	//Update Substitute Preferences
-	function saveSubstitutePreferences (name, lastname, schoolList, subjectlist){
-		console.log("Saving Substitute Preferences, name: "+name+", last name:"+lastName);
-		console.log("School list:");
+
+function computeSubsMatchList(){
+	candidateList = new Array();candidateList = new Array();
+	
+	if (window.localStorage.length - 1) {
+		var i,j, key;
+		var k=0;
+		for(i=0; i<missingSubjectList.length;i++){
+			var subject =missingSubjectList[i];
+			var school = missingSchoolList[i];
+			//now search the list of substitutes for a match
+			for (j = 0; j < window.localStorage.length; j++) {
+				key = window.localStorage.key(j);
+				if (/Substitutes:\d+/.test(key)) {
+					var jsonStr = JSON.parse(window.localStorage.getItem(key));
+					if((subHasSubject(subject,jsonStr.sub_prefSubject)) && 
+						(subHasSchool(school,jsonStr.sub_school))){
+						candidateList[k]=jsonStr; //Stores the whole JSON string for that.
+						k++;
+					}
+				}
+			}
+		}
+		alert("Substitute Candidates: "+JSON.stringify(candidateList));
+	}
+} 
+
+
+function subHasSubject(missingSubject, subSubjectList){
+	if((subSubjectList==null) || (subSubjectList.length==0)){
+		return false;
+	}
+	else{
+		var strList = subSubjectList.split(",");
+		for(var i=0;i<strList.length;i++){
+			strList[i] = strList[i].replace(/^\s+|\s+$/g, " ");
+		}
 		var i=0;
-		var schoolListStr;
-		if(schoolList.length()>0){
-			while(i<schoolList.lenght()){
-				schoolListStr = schoolListStr+schoolList[i]+";";
-				i++;
+		var found = false;
+		while((i < strList.length) && (!found)) {
+			if(missingSubject.toLowerCase()==strList[i].toLowerCase()){
+				found=true;
 			}
-			console.log(schoolListStr);
+			i++;
 		}
-		else{
-			console.log("School list empty;");
-		}
-		
-		
-		i=0;
-		var subjecListStr;
-		if(subjecListStr.length()>0){
-			while(i<subjecListStr.lenght()){
-				subjecListStr = subjecListStr+subjectlist[i]+";";
-			}
-			console.log(subjecListStr);
-		}
-		else{
-			console.log("Subject list empty;");
-		}
+		return found;
 	}
-	
-	//Remove Substitute Preferences
-	function removeSubstitutePreferences (name, lastname){
-		console.log("Removing Preferences for Substitute, name: "+name+", last name:"+lastName);
-	}
+}
 
-	//---------------------------------------------------------------------------------------------------
-	
+function subHasSchool(missingSchool, subSchoolList){
+	if((subSchoolList==null) || (subSchoolList.length==0)){
+		return false;
+	}
+	else{
+		var strList = subSchoolList.split(",");
+		for(var i=0;i<strList.length;i++){
+			strList[i] = strList[i].replace(/^\s+|\s+$/g, " ");
+		}
+		var i=0;
+		var found = false;
+		while((i < strList.length) && (!found)) {
+			if(missingSchool.toLowerCase()==strList[i].toLowerCase()){
+				found=true;
+			}
+			i++;
+		}
+		return found;
+	}
+}
+
+
 	
