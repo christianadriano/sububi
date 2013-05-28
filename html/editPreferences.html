@@ -1,33 +1,46 @@
 <h1>Edit Preferences for Substitute</h1>
-
+<script language="JavaScript" src="js/profileOperations.js" type="text/javascript">
+</script>
 <body>
 
 
-<p>First Name: <input/><nbsp> Last Name: <input/> <button> Search </button> </p>
+<p> Name: <input name="teacherName" id="teacherName" type="text" /> 
+<nbsp> PIN: <input name="PIN" id="PIN" type="text" />
+<input id="searchTeacher" type="button" value="searchTeacher" onclick="searchTeacherByName();" />
+
+SSN:<input/></br>
+Phone:<input/></br>
+
+
 
 <form action="">
 <p>
 <b>School List:</b><br/>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>District 43</br>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Adobe</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Oak Tree</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Oak</br>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Sequoia</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Pine Tree</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Ficus</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Pine</br>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Cedar</br>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Mahogany</br>
 </form>
 
 <b>Subject List:</b><br/>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>History</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Literature</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Biology</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Sequoia</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Physics</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Home room</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Science</br>
 <input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Math</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Cedar</br>
-<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Mahogany</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>English</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Social Studies</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Physical Ed</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>Arts / Music</br>
+<input type="checkbox" name="Q1" value="a" onclick="checkans()"/>World Language</br>
 <br>
+
+<b>Grade Levels:</b><br/>
+<input type="radio" name="Q1" value="a" onclick="checkans()"/>K <i>(elementary school grade (K-6))</i></br>
+<input type="radio" name="Q1" value="a" onclick="checkans()"/>J <i>(Junior High School grade (7-9))</i></br>
+<input type="radio" name="Q1" value="a" onclick="checkans()"/>H <i>(High School Grade (10-12))</i></br>
+<input type="radio" name="Q1" value="a" onclick="checkans()"/>A <i>(Non-grade level related specialties)</i></br>
 
 <button>Save</button> <nbsp> <button>Remove</button> <nbsp> <button>Cancel</button>
 </du>
