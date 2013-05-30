@@ -27,16 +27,13 @@ subTeacherList[3] = [["Caroline Herschel"], ["Science"], ["A"], ["Pine","Cedar"]
 
 //---- Report Function ---------------------------------------
 
-var missingSubjectList = new Array();
-var missingSchoolList = new Array();
 var candidateList = new Array();
+var missingTupleList = new Array();
 
 function computeMissingList(){
 	
 	//Clean up the lists
-	missingSubjectList = new Array();
-	missingSchoolList = new Array();
-	
+	missingTupleList = new Array();  //Subject, School, Teacher
 	
 	if (window.localStorage.length - 1) {
 		var i, key;
@@ -45,33 +42,47 @@ function computeMissingList(){
 			if (/Contacts:\d+/.test(key)) {
 				var jsonStr = JSON.parse(window.localStorage.getItem(key));
 				if(jsonStr.hired_missingClass=="yes"){
-				missingSubjectList[i]=jsonStr.hired_subject;
-					missingSchoolList[i]=jsonStr.hired_school;
+					var tuple={
+						subject: jsonStr.hired_subject,
+						school:jsonStr.hired_school,
+						teacher:jsonStr.hired_name
+					}
+					missingTupleList[i]=tuple;
 				}
 			}
 		}
-		alert("Missing Subjects: "+missingSubjectList+"\nMissing Schools: "+missingSchoolList);
+		alert("Missings: "+missingTupleList);
 		computeSubsMatchList();
 	}
 } 
 
 
 function computeSubsMatchList(){
-	candidateList = new Array();candidateList = new Array();
+	candidateList = new Array();
 	
 	if (window.localStorage.length - 1) {
 		var i,j, key;
 		var k=0;
-		for(i=0; i<missingSubjectList.length;i++){
-			var subject =missingSubjectList[i];
-			var school = missingSchoolList[i];
+		for(i=0; i<missingTupleList.length;i++){
+			var tuple = missingTupleList[i];
+			var subject = tuple.subject;
+			var school = tuple.school;
+			var teacher = tuple.teacher;
+			var grade = tuple.grade;
 			//now search the list of substitutes for a match
 			for (j = 0; j < window.localStorage.length; j++) {
 				key = window.localStorage.key(j);
 				if (/Substitutes:\d+/.test(key)) {
 					var jsonStr = JSON.parse(window.localStorage.getItem(key));
-					if((subHasSubject(subject,jsonStr.sub_prefSubject)) && 
-						(subHasSchool(school,jsonStr.sub_school))){
+					if((subHasListItem(subject,jsonStr.sub_acceptSubject)) && 
+						(subHasListItem(school,jsonStr.sub_school))){
+						jsonStr.CandidateSchool = school; //Keep track of school and subject which made this sub a candidate  
+						jsonStr.CandidateSubject = subject;
+						jsonStr.CandidateGrade = grade;
+						if(subHasListItem(teacher,jsonStr.sub_teachersSubstituted))//verify if a teacher missing class was already substituted by the current sub.
+							jsonStr.CandidateTeacherSubstituted = true;
+						else
+							jsonStr.CandidateTeacherSubstituted = false;
 						candidateList[k]=jsonStr; //Stores the whole JSON string for that.
 						k++;
 					}
@@ -83,19 +94,19 @@ function computeSubsMatchList(){
 } 
 
 
-function subHasSubject(missingSubject, subSubjectList){
-	if((subSubjectList==null) || (subSubjectList.length==0)){
+function subHasListItem(item, subItemList){
+	if((subItemList==null) || (subItemList.length==0)){
 		return false;
 	}
 	else{
-		var strList = subSubjectList.split(",");
+		var strList = subItemList.split(",");
 		for(var i=0;i<strList.length;i++){
 			strList[i] = strList[i].replace(/^\s+|\s+$/g, " ");
 		}
 		var i=0;
 		var found = false;
 		while((i < strList.length) && (!found)) {
-			if(missingSubject.toLowerCase()==strList[i].toLowerCase()){
+			if(item.toLowerCase()==strList[i].toLowerCase()){
 				found=true;
 			}
 			i++;
@@ -104,26 +115,71 @@ function subHasSubject(missingSubject, subSubjectList){
 	}
 }
 
-function subHasSchool(missingSchool, subSchoolList){
-	if((subSchoolList==null) || (subSchoolList.length==0)){
-		return false;
+///------------------ Computes the Ranking -----------------------------------------------
+
+function computeRanking(){
+
+//   Add 100 points if STSO rating is 1.
+//   Add 50 points if STSO rating is 2.
+//   Add 10 points for each match between vacancy school, grade level, and subject, with a preferred choice of the substitute's.
+//   Add 5 points for each match between vacancy school, grade level, and subject, with an acceptable choice of the substitute's.
+//   Add 1 point for each year of seniority.
+
+	if((candidateList!=null)&&(candidateList.length>0)){
+		for(var i=0;i<candidatesList.length;i++){
+			var jstor = candidatesList[i]; 
+			var points=0;
+			points = points + candidateRating(jstor);
+			points = points + candidateMatchesAcceptableSubjectsAndGrade(jstor);
+			points = points + candidateMatchesPreferredSubjectAndGrade(jstor);
+			points = points + candidateMatchesPreviousSubstitutedTeacherSubjectSchool(jstor);// adds 1000 points so the sub stays at the top.
+			points = points + jstor.sub_seniority;
+			jstor.ranking = points;
+		}
 	}
-	else{
-		var strList = subSchoolList.split(",");
-		for(var i=0;i<strList.length;i++){
-			strList[i] = strList[i].replace(/^\s+|\s+$/g, " ");
-		}
-		var i=0;
-		var found = false;
-		while((i < strList.length) && (!found)) {
-			if(missingSchool.toLowerCase()==strList[i].toLowerCase()){
-				found=true;
-			}
-			i++;
-		}
-		return found;
+	//Sort teachers, Candidate.School, Candidate.Subject, ranking
+	//sortCandidates();
+	
+	//display in a list
+	
+}
+
+function candidateRating(jstor){
+	var pts=0;
+	if(jstor.sub_rating==1)
+		pts=100;
+	else
+		if(jstor.sub_rating==1)
+			pts=50;
+	return pts;
+}
+
+function candidateMatchesAcceptableSubjectsAndGrade(jstor){
+	if(( subHasListItem(jstor.CanditateSubject, jstor.sub_acceptSubject)) &&
+			 (subHasListItem(jstor.CandidateGrade, jstor.sub_acceptGradeLevel)))
+		return 5;
+}
+
+function candidateMatchesPreferredSubjectsAndGrade(jstor){
+	if(( subHasListItem(jstor.CanditateSubject, jstor.sub_prefSubject)) &&
+			 (subHasListItem(jstor.CandidateGrade, jstor.sub_prefGradeLevel)))
+		return 10;
+}
+
+function candidateMatchesPreferredSubjectAndGrade(){
+	function candidateMatchesPreferredSubjectsAndGrade(jstor){
+		if(( subHasListItem(jstor.CanditateSubject, jstor.sub_acceptSubject)) &&
+				 (subHasListItem(jstor.CandidateGrade, jstor.sub_acceptGradeLevel)))
+			return 10;
 	}
 }
 
+function candidateMatchesSubstitutedTeacherSubjectSchool(jstor){
+	if(jstor.CandidateTeacherSubstituted)
+		return 1000;
+}
 
+function openReport(){
+	window.open("./report.html");
+}
 	

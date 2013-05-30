@@ -13,7 +13,7 @@
 
 <form id="login-form">
 <div class="item text">
-			<label>Please enter your UCINETID:</label>
+			<label>Use your UCInetID:</label>
 			<div class="field"><input type="text" name="login_field" value=""  /></div> 
 </div>
 
@@ -31,21 +31,14 @@
 		var loginName =  document.getElementById("login-form").login_field.value;
 		console.log(" form: " + loginName);
 		if(loginName == ""){
-			alert("please enter you UCI NET ID");
+			alert("Please enter your UCInetID.");
 		}
 		else{
-			var lastChar = loginName.slice(-1); 
-			console.log(lastChar);
-			if(lastChar>=0 && lastChar<=3){
-				window.open("./editTeacherPreference.html");
-			}
-			else
-			if(lastChar>3 && lastChar<=6){
-				window.open("./editTeacherPreference.html");
-			}
-			else{
-				window.open("./editTeacherPreferences.html");
-			}
+			//var lastChar = loginName.slice(-1); 
+			//console.log(lastChar);
+			
+			window.open("./editTeacherPref.html");
+			
 		}
 	}
 	
