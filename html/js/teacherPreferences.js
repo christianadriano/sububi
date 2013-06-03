@@ -1,4 +1,45 @@
 	
+		
+		var entry01 = {
+				id: 0,
+				hired_name:"Marie Curie",
+				hired_SSN: "1887",
+				hired_subject: "Science",
+				hired_grade:"K",
+				hired_school:"Oak",
+				hired_missingClass: "yes"
+			};
+		
+		var entry02 = {
+				id: 1,
+				hired_name: "Caroline Herschel",
+				hired_SSN: "9824",
+				hired_subject: "Science",
+				hired_grade: "J",
+				hired_school:"Cedar",
+				hired_missingClass: "yes"
+		};
+		
+		var entry03 = {
+				id: 1,
+				hired_name: "Mary Anning",
+				hired_SSN: "6524",
+				hired_subject: "Biology",
+				hired_grade: "A",
+				hired_school:"Cedar",
+				hired_missingClass: "no"
+		};
+		
+		var entry04 = {
+				id: 1,
+				hired_name: "Rosalind Franklin",
+				hired_SSN: "4324",
+				hired_subject: "English",
+				hired_grade: "A",
+				hired_school:"Cedar",
+				hired_missingClass: "no"
+		};
+
 var Contacts = {
 			index: window.localStorage.getItem("Contacts:index"),
 			$table: document.getElementById("contacts-table"),
@@ -7,10 +48,7 @@ var Contacts = {
 			$button_discard: document.getElementById("contacts-op-discard"),
 
 			init: function() {
-				// initialize storage index
-				if (!Contacts.index) {
-					window.localStorage.setItem("Contacts:index", Contacts.index = 1);
-				}
+				
 
 				// initialize form
 				document.getElementById('contacts-form').reset();
@@ -19,12 +57,14 @@ var Contacts = {
 					Contacts.$form.reset();
 					Contacts.$form.id_entry.value = 0;
 				}, true);
+								
 				Contacts.$form.addEventListener("submit", function(event) {
 					var entry = {
 						id: parseInt(this.id_entry.value),
 						hired_name: this.hired_name.value,
 						hired_SSN: this.hired_SSN.value,
 						hired_subject: this.hired_subject.value,
+						hired_grade:this.hired_grade.value,
 						hired_school:this.hired_school.value,
 						hired_missingClass: "no"
 					};
@@ -35,19 +75,21 @@ var Contacts = {
 					else{ 
 						entry.hired_missingClass="no";
 					}
-					
-					if (entry.id == 0) { // add
-						Contacts.storeAdd(entry);
-						Contacts.tableAdd(entry);
-					}
-					else { // edit
-						Contacts.storeEdit(entry);
-						Contacts.tableEdit(entry);
-					}
+					var op = event.target.getAttribute("id");
+					if(op=="contacts-form"){
+						if (entry.id == 0) { // add
+							Contacts.storeAdd(entry);
+							Contacts.tableAdd(entry);
+						}
+						else { // edit
+							Contacts.storeEdit(entry);
+							Contacts.tableEdit(entry);
+						}
 
-					this.reset();
-					this.id_entry.value = 0;
-					event.preventDefault();
+						this.reset();
+						this.id_entry.value = 0;
+						event.preventDefault();
+					}
 				}, true);
 
 				// initialize table
@@ -68,8 +110,22 @@ var Contacts = {
 							.forEach(Contacts.tableAdd);
 					}
 				}
+				// initialize storage index
+				if (Contacts.index==0) {
+					window.localStorage.setItem("Contacts:index", Contacts.index = 1);
+					Contacts.storeAdd(entry01);
+					Contacts.tableAdd(entry01);
+					Contacts.storeAdd(entry02);
+					Contacts.tableAdd(entry02);
+					Contacts.storeAdd(entry03);
+					Contacts.tableAdd(entry03);
+					Contacts.storeAdd(entry04);
+					Contacts.tableAdd(entry04);
+				}
+				
 				Contacts.$table.addEventListener("click", function(event) {
 					var op = event.target.getAttribute("data-op");
+					
 					if (/edit|remove/.test(op)) {
 						var entry = JSON.parse(window.localStorage.getItem("Contacts:"+ event.target.getAttribute("data-id")));
 						if (op == "edit") {
@@ -77,6 +133,7 @@ var Contacts = {
 							Contacts.$form.hired_name.value = entry.hired_name;
 							Contacts.$form.hired_SSN.value = entry.hired_SSN;
 							Contacts.$form.hired_subject.value = entry.hired_subject;
+							Contacts.$form.hired_grade.value = entry.hired_grade;
 							Contacts.$form.hired_school.value = entry.hired_school;
 							
 							console.log(entry.hired_missingClass);
@@ -145,3 +202,7 @@ var Contacts = {
 			}
 		};
 		Contacts.init();
+		
+
+		
+	

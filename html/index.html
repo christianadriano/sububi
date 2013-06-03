@@ -4,7 +4,8 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Sububi Welcome Page</title>
-	
+	 <script language="JavaScript" src="js/modernizr.js"></script>
+	 <script language="JavaScript" src="js/login.js"></script>
 </head>
 
 <h1>Welcome to Sububi!</h1>
@@ -19,30 +20,14 @@
 
 <div class="button-wrapper">
 			<div class="item button button-default">
-				<div class="field"><input type="submit" id="op-login" value="login" onclick="loginFunction()" /></div>
+				<div class="field"><input type="submit" id="op-login" value="Login" onclick="loginFunction()" /></div>
+			</div>
+			<br><br>
+			<div class="item button button-default">
+				<div class="field"><input type="submit" id="op-check" value="Verify your browser compatibility" onclick="checkBrowser()" /></div>
 			</div>
 </div>
+
 </form>
-
-
-<script>
-	
-	function loginFunction() {
-		var loginName =  document.getElementById("login-form").login_field.value;
-		console.log(" form: " + loginName);
-		if(loginName == ""){
-			alert("Please enter your UCInetID.");
-		}
-		else{
-			//var lastChar = loginName.slice(-1); 
-			//console.log(lastChar);
-			
-			window.open("./editTeacherPref.html");
-			
-		}
-	}
-	
-</script>
-
 
 </body>
