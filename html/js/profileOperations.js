@@ -1,6 +1,84 @@
 
 //---- Report Function ---------------------------------------
 
+function generateReport(){
+	initializeReport();
+	var missingTupleList = discoverMissingClasses();
+	var tableContentList = obtainSubstitutes(missingTupleList);
+	var success = drawTable(tableContentList);
+	return success;
+}
+
+function initializeReport(){
+	version = mapTestVersion(window.localStorage.getItem("firstLetter"));
+
+	//clean report table
+	var body = document.getElementsByTagName("body")[0];
+	cleanReport(body);	
+
+	window.localStorage.setItem("Report:index",0);//Initialize to zero.
+}
+
+
+function discoverMissingClasses(){
+	var missingTupleList = new Array(); //Subject, School, Teacher, Grade
+
+	var k=0;
+	for (var i = 0; i < window.localStorage.length; i++) {
+		key = window.localStorage.key(i);
+		if (/Contacts:\d+/.test(key)) {
+			var jsonStr = JSON.parse(window.localStorage.getItem(key));
+			if(jsonStr.hired_missingClass=="yes"){
+				var tuple={
+						subject: jsonStr.hired_subject,
+						school:jsonStr.hired_school,
+						teacher:jsonStr.hired_name,
+						grade:jsonStr.hired_grade
+				};
+				console.log(tuple);
+				missingTupleList[k]=tuple;
+				k++;
+				//console.log("Missing: "+tuple.subject+", "+tuple.school+", "+tuple.teacher+", "+ tuple.grade);
+			}
+		}
+	}
+	return missingTupleList;
+}
+
+	function obtainSubstitutes(missingTupleList){
+		var tableContentList=new Array();
+		//Traverses each list of candidates and draws the report table 
+		for(var i=0;i<missingTupleList.length;i++){
+			var tuple = missingTupleList[i];
+			var sortedCandidateList = computeSubsMatchList(tuple,version);
+			var tableTuple={tuple:tuple,
+							candidateList:sortedCandidateList
+			};
+			tableContentList[i]= tableTuple;
+		}
+		return tableContentList;
+	}
+	
+	function drawTable(tableList){
+		
+		for(var i=0;i<tableList.length;i++){
+			var table = createTable();
+			var tableTuple = tableList[i];
+			var missingClassTuple = tableTuple.tuple;
+			var sortedCandidateList = tableTuple.candidateList;
+			if((sortedCandidateList==null) || (sortedCandidateList.length==0)){
+				addTableRow(table,null,missingClassTuple);
+			}
+			else{
+				for(var j=0; j<sortedCandidateList.length;j++){
+					var jstor = sortedCandidateList[j];
+					addTableRow(table,jstor,missingClassTuple);
+				}
+			}
+		}
+		return true;
+	}
+
 function computeMissingList(){
 
 	version = mapTestVersion(window.localStorage.getItem("firstLetter"));
@@ -13,10 +91,10 @@ function computeMissingList(){
 
 	//Clean up the lists
 	missingTupleList = new Array(); //Subject, School, Teacher, Grade
-	missingTupleKey = new Array();
+	//missingTupleKey = new Array();
 
 	if (window.localStorage.length - 1) {
-		var i,j, key;
+		var i, key;
 		var k=0;
 		var missingTupleKeyList =[];
 		for (i = 0; i < window.localStorage.length; i++) {
@@ -30,6 +108,7 @@ function computeMissingList(){
 						teacher:jsonStr.hired_name,
 						grade:jsonStr.hired_grade
 					};
+					console.log(tuple);
 					var tupleKey = generateKey(tuple);
 					missingTupleKeyList[k] = tupleKey;
 					k++;
@@ -44,7 +123,7 @@ function computeMissingList(){
 			var tupleKey = missingTupleKeyList[i];
 			var tuple = missingTupleList[tupleKey];
 			var sortedCandidateList = computeSubsMatchList(tuple,version);
-			var table = createTable(tupleKey, tuple, body);
+			var table = createTable();
 			if((sortedCandidateList==null) || (sortedCandidateList.length==0)){
 				addTableRow(table,null,tuple);
 			}
@@ -62,7 +141,6 @@ function computeMissingList(){
 function mapTestVersion(char){
 	if(char==null)
 		return 1;
-	
 	var str = char.toLowerCase();
 	
 	if(str.match(/^\abcdefghi/))
@@ -93,6 +171,7 @@ function generateKey(tuple){
 
 
 function computeSubsMatchList(tuple, version){
+	console.log(tuple+ " "+version);
 	candidateList = new Array();
 
 	if (window.localStorage.length - 1) {
@@ -193,14 +272,7 @@ function computeRanking(candidateList){
 	if((candidateList!=null)&&(candidateList.length>0)){
 		for(var i=0;i<candidateList.length;i++){
 			var jstor = candidateList[i]; 
-			var points=0;
-			jstor.points=0;
-			points = points + rating(jstor);
-			points = points + matchAcceptableSubjectsAndGrade(jstor);
-			points = points + matchPreferredSubjectAndGrade(jstor);
-			points = points + matchPreviouslySubstitutedTeacher(jstor);// adds 1000 points so the sub stays at the top.
-			points = points + parseInt(jstor.sub_seniority);
-			jstor.points = points;
+			jstor.points= calculateTotalPoints(jstor);
 			console.log("Points: "+JSON.stringify(jstor)+ " i="+i);
 			candidateList[i] = jstor; //store the json back to the list of candidates
 		}
@@ -211,34 +283,49 @@ function computeRanking(candidateList){
 	return sortedCandidateList;
 }
 
-function rating(jstor){
+
+function calculateTotalPoints(jstor){
+	var points=0;
+	jstor.points=0;
+	points = points + rating(jstor.sub_rating);
+	points = points + matchAcceptableSubjectsAndGrade(jstor.CandidateSubject, jstor.sub_acceptSubject,jstor.CandidateGrade, jstor.sub_acceptGradeLevel);
+	points = points + matchPreferredSubjectAndGrade(jstor.CandidateSubject, jstor.sub_prefSubject,jstor.CandidateGrade, jstor.sub_prefGradeLevel);
+	points = points + matchPreviouslySubstitutedTeacher(jstor.CandidateTeacherSubstituted,jstor.sub_teacherDatesArray);// adds 1000 points so the sub stays at the top.
+	points = points + parseInt(jstor.sub_seniority);
+	
+	return points;
+}
+
+
+
+function rating(subrating){
 	var pts=0;
-	if(jstor.sub_rating==1)
+	if(subrating==1)
 		pts=100;
 	else
-		if(jstor.sub_rating==2)
+		if(subrating==2)
 			pts=50;
 	return pts;
 }
 
-function matchPreferredSubjectAndGrade(jstor){
-	if(( subHasListItem(jstor.CandidateSubject, jstor.sub_prefSubject)) &&
-			 (subHasListItem(jstor.CandidateGrade, jstor.sub_prefGradeLevel)))
+function matchPreferredSubjectAndGrade(candidateSubject, subPrefSubject,candidateGrade, subPrefGradeLevel){
+	if(( subHasListItem(candidateSubject, subPrefSubject)) &&
+			 (subHasListItem(candidateGrade, subPrefGradeLevel)))
 		return 10;
 	else return 0;
 }
 
-function matchAcceptableSubjectsAndGrade(jstor){
-	if(( subHasListItem(jstor.CandidateSubject, jstor.sub_acceptSubject)) &&
-			 (subHasListItem(jstor.CandidateGrade, jstor.sub_acceptGradeLevel)))
+function matchAcceptableSubjectsAndGrade(candidateSubject, subAcceptSubject,candidateGrade, subAcceptGradeLevel){
+	if(( subHasListItem(candidateSubject, subAcceptSubject)) &&
+			 (subHasListItem(candidateGrade, subAcceptGradeLevel)))
 		return 5;
 	else return 0;
 }
 
-function matchPreviouslySubstitutedTeacher(jstor){
+function matchPreviouslySubstitutedTeacher(candidateTeacherSubstituted,subTeacherDatesArray){
 	var points = 0;
-	if(jstor.CandidateTeacherSubstituted!=null){
-		var date = jstor.sub_teacherDatesArray[jstor.CandidateTeacherSubstituted];
+	if(candidateTeacherSubstituted!=null){
+		var date = subTeacherDatesArray[candidateTeacherSubstituted];
 		var dateList = date.split("/");
 		if(dateList.length==3){
 			try{	
@@ -250,7 +337,7 @@ function matchPreviouslySubstitutedTeacher(jstor){
 			catch(err){ points=0;}
 		}
 	}
-	jstor.CandidateTeacherSubstitutedPoints = points;
+	
 	return points;
 }
 
@@ -281,16 +368,8 @@ function sortCandidate(list){
 	return sortedList;
 }
 
-//Keeps track of the list of subs who already substituted the current missing teacher
-//Such subs will be put at the top of the list
-function insertSubTopPriority(jstor, priorityList){}
-
-
-//List that follows the points calculates in descent order
-function insertSubNormalList(jstor, normalList){}
-
 //------------------------------------------------- MANAGE REPORT TABLE -----------------------------------------------------------
-function createTable(strKey,tuple, body) {
+function createTable() {
 		 
 	 // create elements <table> and a <tbody>
 	 var tbl = document.createElement("report-table");
@@ -335,7 +414,8 @@ function createTable(strKey,tuple, body) {
 	 
 	 tbl.setAttribute("id","report-table");
 	 tbl.appendChild(tblBody);
-	 body.appendChild(tbl);
+//	 document.getElementsByTagName('body')[1].appendChild(tbl);
+	 document.body.appendChild(tbl);
 	 
 	 return tbl;
 }
