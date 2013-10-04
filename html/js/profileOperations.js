@@ -356,9 +356,10 @@ function sortCandidate(list){
 		var points = arrayOfPoints[i];
 		for(var j=0;j<list.length;j++){
 			var jstor = list[j];
+			//Search for a register with the same points.
 			if(jstor.points == points){
-				if(jstor.CandidateTeacherSubstituted!=null){ //Restore the original points
-					jstor.points =0;
+				if(jstor.CandidateTeacherSubstituted!=null){//Means that sub substituted the teacher at some specific date
+					jstor.points =0; //Won´t display points, but name/date.
 				}
 				sortedList[k]= jstor;
 				k++;
@@ -379,7 +380,7 @@ function createTable() {
 	 var $tr = document.createElement("tr"), $th;
 	 
 	 $th = document.createElement("th");
-	 $th.appendChild(document.createTextNode("Points or Teacher Filled"));
+	 $th.appendChild(document.createTextNode("Points"));
 	 $tr.appendChild($th);
 	 
 	 $th = document.createElement("th");
