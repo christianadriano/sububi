@@ -318,8 +318,8 @@ function matchPreferredSubjectAndGrade(candidateSubject, subPrefSubject,candidat
 function matchAcceptableSubjectsAndGrade(candidateSubject, subAcceptSubject,candidateGrade, subAcceptGradeLevel){
 	if(( subHasListItem(candidateSubject, subAcceptSubject)) &&
 			 (subHasListItem(candidateGrade, subAcceptGradeLevel)))
-		return 5;
-	else return 0;
+		return 0;
+	else return 5;
 }
 
 function matchPreviouslySubstitutedTeacher(candidateTeacherSubstituted,subTeacherDatesArray){
@@ -425,19 +425,13 @@ function createTable() {
 function addTableRow(table, jstor,tuple) {
 	var ReportTable = table; //document.getElementById("report-table");
 	var index = window.localStorage.getItem("Report:index");
-
 	var $tr = document.createElement("tr"), $td;
-
 	$td = document.createElement("td");
-	var value=0;
-	var name;
-	var pin;
-	var phone;
+	var value,name,pin,phone;
 	school=tuple.school;
 	subject = tuple.subject;
 	grade=tuple.grade;
 	teacher = tuple.teacher;
-
 	if(jstor==null){
 		value = "No options";
 		name = "-";
@@ -445,7 +439,6 @@ function addTableRow(table, jstor,tuple) {
 		phone="-";
 	}
 	else{
-
 		if(jstor.points!=0){
 			value = jstor.points;
 		}
@@ -454,7 +447,6 @@ function addTableRow(table, jstor,tuple) {
 			var date = jstor.sub_teacherDatesArray[teacherName];
 			value = teacherName+","+date;
 		}
-
 		name = jstor.sub_name;
 		pin=jstor.sub_PIN;
 		phone=jstor.sub_phone;
