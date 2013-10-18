@@ -451,35 +451,45 @@ function addTableRow(table, jstor,tuple) {
 		pin=jstor.sub_PIN;
 		phone=jstor.sub_phone;
 	}
-	$td.appendChild(document.createTextNode(value));
+	
+	$td.innerHTML = '<a onclick="alert(' +'\''+value+'\''+ ');" >'+ value+ '</a>';
+	//$td.appendChild(document.createTextNode(value));
+	//$td.setAttribute("value",value);
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(name));
+	$td.innerHTML = '<a onclick="alert(' +'\''+name+'\''+ ');" >'+ name+ '</a>';
+	//$td.appendChild(document.createTextNode(name));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(pin));
+	$td.innerHTML = '<a onclick="alert(' +'\''+pin+'\''+ ');" >'+ pin+ '</a>';
+	//$td.appendChild(document.createTextNode(pin));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(phone));
+	$td.innerHTML = '<a onclick="alert(' +'\''+phone+'\''+ ');" >'+ phone+ '</a>';
+	//$td.appendChild(document.createTextNode(phone));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(school));
+	$td.innerHTML = '<a onclick="alert(' +'\''+school+'\''+ ');" >'+ school+ '</a>';
+	//$td.appendChild(document.createTextNode(school));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(subject));
+	$td.innerHTML = '<a onclick="alert(' +'\''+subject+'\''+ ');" >'+ subject+ '</a>';
+	//$td.appendChild(document.createTextNode(subject));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(grade));
+	$td.innerHTML = '<a onclick="alert(' +'\''+grade+'\''+ ');" >'+ grade+ '</a>';
+	//$td.appendChild(document.createTextNode(grade));
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
-	$td.appendChild(document.createTextNode(teacher));
+	$td.innerHTML = '<a onclick="alert(' +'\''+teacher+'\''+ ');" >'+ teacher+ '</a>';
+	//$td.appendChild(document.createTextNode(teacher));
 	$tr.appendChild($td);
 
 
