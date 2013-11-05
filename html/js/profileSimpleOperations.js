@@ -10,8 +10,7 @@ function generateReport(){
 }
 
 function initializeReport(){
-	version = mapTestVersion(window.localStorage.getItem("firstLetter"));
-
+	
 	//clean report table
 	var body = document.getElementsByTagName("body")[0];
 	cleanReport(body);	
@@ -79,79 +78,6 @@ function discoverMissingClasses(){
 		return true;
 	}
 
-function computeMissingList(){
-
-	version = mapTestVersion(window.localStorage.getItem("firstLetter"));
-	
-	//clean report table
-	var body = document.getElementsByTagName("body")[0];
-	cleanReport(body);	
-	
-	window.localStorage.setItem("Report:index",0);//Initialize to zero.
-
-	//Clean up the lists
-	missingTupleList = new Array(); //Subject, School, Teacher, Grade
-	//missingTupleKey = new Array();
-
-	if (window.localStorage.length - 1) {
-		var i, key;
-		var k=0;
-		var missingTupleKeyList =[];
-		for (i = 0; i < window.localStorage.length; i++) {
-			key = window.localStorage.key(i);
-			if (/Contacts:\d+/.test(key)) {
-				var jsonStr = JSON.parse(window.localStorage.getItem(key));
-				if(jsonStr.hired_missingClass=="yes"){
-					var tuple={
-						subject: jsonStr.hired_subject,
-						school:jsonStr.hired_school,
-						teacher:jsonStr.hired_name,
-						grade:jsonStr.hired_grade
-					};
-					console.log(tuple);
-					var tupleKey = generateKey(tuple);
-					missingTupleKeyList[k] = tupleKey;
-					k++;
-					missingTupleList[tupleKey]=tuple;
-					//console.log("Missing: "+tuple.subject+", "+tuple.school+", "+tuple.teacher+", "+ tuple.grade);
-				}
-			}
-		}
-		
-		//Traverses each list of candidates and draws the report table 
-		for(var i=0;i<missingTupleKeyList.length;i++){
-			var tupleKey = missingTupleKeyList[i];
-			var tuple = missingTupleList[tupleKey];
-			var sortedCandidateList = computeSubsMatchList(tuple,version);
-			var table = createTable();
-			if((sortedCandidateList==null) || (sortedCandidateList.length==0)){
-				addTableRow(table,null,tuple);
-			}
-			else{
-				for(var j=0; j<sortedCandidateList.length;j++){
-					var jstor = sortedCandidateList[j];
-					addTableRow(table,jstor,tuple);
-				}
-			}
-		}
-	}
-	document.getElementById("report-title").scrollIntoView();
-}
-
-function mapTestVersion(char){
-	if(char==null)
-		return 1;
-	var str = char.toLowerCase();
-	
-	if(str.match(/^\abcdefghi/))
-		return 1;
-	else
-		if(str.match(/^\jklmno/))
-			return 2;
-		if(str.match(/^\pqrstuvxz/))
-				return 3;
-}
-
 
 function generateKey(tuple){
 	var result="";
@@ -171,7 +97,6 @@ function generateKey(tuple){
 
 
 function computeSubsMatchList(tuple, version){
-	console.log(tuple+ " "+version);
 	candidateList = new Array();
 
 	if (window.localStorage.length - 1) {
@@ -196,7 +121,7 @@ function computeSubsMatchList(tuple, version){
 					jsonStr.CandidateSubject = subject;
 					jsonStr.CandidateGrade = grade;
 					
-					//Handle the list of teachers with dates Name1,dd/MM/yyyy,Name2,dd/MM/yyyy
+					//Handles the list of teachers with dates Name1,dd/MM/yyyy,Name2,dd/MM/yyyy
 					jsonStr.sub_teacherDatesArray = obtainDates(jsonStr.sub_teachersSubstituted);
 					jsonStr.sub_teachersField = obtainTeachersOnly(jsonStr.sub_teachersSubstituted);
 					
@@ -322,23 +247,18 @@ function matchAcceptableSubjectsAndGrade(candidateSubject, subAcceptSubject,cand
 	else return 5;
 }
 
+/** If teacher substituted the absent teacher, then add points based on the how long the substitution happened
+ * Ex. Date of substitution = February 9 2012. Today is November 04 2013.
+ * points difference of months between today and the Date of Substitution = nov/2013 - feb/2012 = 21
+ * @param candidateTeacherSubstituted
+ * @param subTeacherDatesArray
+ * @returns {Number}
+ */ 
 function matchPreviouslySubstitutedTeacher(candidateTeacherSubstituted,subTeacherDatesArray){
-	var points = 0;
-	if(candidateTeacherSubstituted!=null){
-		var date = subTeacherDatesArray[candidateTeacherSubstituted];
-		var dateList = date.split("/");
-		if(dateList.length==3){
-			try{	
-				var day = dateList[0].trim();
-				var month = dateList[1].trim();
-				var year = dateList[2].trim();
-				points = parseInt(year+month+day);
-			}
-			catch(err){ points=0;}
-		}
-	}
-	
-	return points;
+	if(candidateTeacherSubstituted!=null)
+		return 50;
+	else
+		return 0;
 }
 
 function sortCandidate(list){
@@ -349,20 +269,19 @@ function sortCandidate(list){
 	}
 	arrayOfPoints.sort(function(a,b) {return b - a;});
 	console.log(JSON.stringify(arrayOfPoints));
-
+	
 	var sortedList=[];
 	var k=0;
 	for(i=0;i<arrayOfPoints.length;i++){
 		var points = arrayOfPoints[i];
 		for(var j=0;j<list.length;j++){
 			var jstor = list[j];
-			//Search for a register with the same points (if it exists)
-			if((jstor!=null) && (jstor.points == points)){
-				if(jstor.CandidateTeacherSubstituted!=null){//Means that a "sub" substituted the teacher at some specific date
+			//Search for a register with the same points.
+			if(jstor.points == points){
+				if(jstor.CandidateTeacherSubstituted!=null){//Means that sub substituted the teacher at some specific date
 					jstor.points =0; //Won´t display points, but name/date.
 				}
 				sortedList[k]= jstor;
-				list[j]=null; //remove element
 				k++;
 			}
 		}
