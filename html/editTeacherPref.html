@@ -4,18 +4,58 @@
 <head>
 	<meta charset="utf-8" />
 	<title>Teacher Preferences</title>
+<script language="JavaScript" src="js/profileOperations.js" type="text/javascript"> </script>
+
+<script type="text/javascript" src="js/jQuery-1.10.2.js"></script>
+<script type="text/javascript">
+
+$(function(){
+
+
+//	Listen to the body for any DOM modifications in
+//	which a DOM element is removed.
+
+	$( "body" ).bind(
+			"DOMNodeRemoved",
+			function( objEvent ){
+//				Append event to log display.
+				$( "#event-log" ).append(
+						"<li>" +
+						"Node removed: " +
+						$( objEvent.target ).text() +
+						"</li>"
+				);
+				objEvent.stopPropagation();
+				return false;
+			}
+	);
 	
+	$( "body" ).bind(
+			"DOMNodeInserted",
+			function( objEvent ){
+					//Append event to log display.
+					$( "#event-log" ).append(
+						"<li>" +
+						"Added: "+
+						$( objEvent.target ).text()+
+						"</li>"
+					);
+					objEvent.stopPropagation();
+					return false;
+			}
+			
+	);
+			
+	
+});
+
+</script>
+
 </head>
 
-	
+<body>
 
 
-
-
-<body-main>
-
-
-	
 <h1>Substitute Teachers</h1>
 	<table id="Substitutes-table">
 		<tr id="Substitutes-head">
@@ -162,15 +202,14 @@
 	</form>
 
 <script language="JavaScript" src="js/teacherPreferences.js" type="text/javascript">
+
 window.onbeforeunload = function() {
-			  localStorage.removeItem(key);
+		  localStorage.removeItem(key);
 			  return '';
 };
 </script>
 
-<script language="JavaScript" src="js/profileOperations.js" type="text/javascript">
-</script>
+<ul id="event-log" />
 
-
-</body-main>
+</body>
 </html>

@@ -39,17 +39,17 @@
 				hired_school:"Cedar",
 				hired_missingClass: "no"
 		};
-
+		
 var Contacts = {
 			index: window.localStorage.getItem("Contacts:index"),
 			$table: document.getElementById("contacts-table"),
 			$form: document.getElementById("contacts-form"),
 			$button_save: document.getElementById("contacts-op-save"),
 			$button_discard: document.getElementById("contacts-op-discard"),
-
+			$event_log: document.getElementById("event-log"),
+			
 			init: function() {
 				
-
 				// initialize form
 				document.getElementById('contacts-form').reset();
 				Contacts.$form.reset();
@@ -199,10 +199,8 @@ var Contacts = {
 			},
 			tableRemove: function(entry) {
 				Contacts.$table.removeChild(document.getElementById("entry-"+ entry.id));
+				//Why isn't this line raising a DOMNodeRemoved EVENT???????
 			}
 		};
 		Contacts.init();
-		
-
-		
 	

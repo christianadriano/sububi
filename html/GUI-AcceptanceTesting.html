@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>DOM Modification Event</title>
+<script type="text/javascript" src="js/jQuery-1.10.2.js"></script>
+
+
+</head>
+<body>
+ 
+<h1>
+	DOM Modification Event Demo
+</h1>
+ 
+<p id="children">
+	<a>Remove Me 1</a>
+	<a>Remove Me 2</a>
+	<a>Remove Me 3</a>
+	<a>Remove Me 4</a>
+</p>
+ 
+<p id="nested">
+	Child Action: <a>Remove my parent</a>
+</p>
+ 
+<h2>
+	Event Log
+</h2>
+ 
+<ul id="event-log" />
+ 
+ 
+ <script type="text/javascript">
+$(function(){
+
+
+
+//	Bind link hanlders to remove parent.
+	$( "p#nested a" )
+	.attr( "href", "javascript:void( 0 )" )
+	.dblclick(
+			function( objEvent ){
+//				Remove parent.
+				$( this.parentNode ).remove();
+
+//				Cancel click event.
+				return( false );
+			}
+	)
+	;
+
+//	Listen to the body for any DOM modifications in
+//	which a DOM element is removed.
+	$( "body" ).bind(
+			"DOMNodeRemoved",
+			function( objEvent ){
+//				Append event to log display.
+				$( "#event-log" ).append(
+						"<li>" +
+						"Node removed: " +
+						$( objEvent.target ).text() +
+						"</li>"
+				);
+			}
+	);
+
+});
+</script>
+
+
+
+<script language="JavaScript" src="js/teacherPreferences.js" type="text/javascript">
+bindFunction();
+</script>
+ <input type="button" id="contacts-op-report" value="Bind" onclick="bindFunction()" />
+</body>
+</html>

@@ -453,12 +453,14 @@ function addTableRow(table, jstor,tuple) {
 		phone=jstor.sub_phone;
 	}
 	
-	$td.innerHTML = '<a onclick="alert(' +'\''+value+'\''+ ');" >'+ value+ '</a>';
+	//$td.innerHTML = '<a onclick="alert(' +'\''+value+'\''+ ');" >'+ value+ '</a>';
+	$td.innerHTML = '<a' +'\''+value+'\'' +'>'+ value+ '</a>';
 	//$td.appendChild(document.createTextNode(value));
 	//$td.setAttribute("value",value);
 	$tr.appendChild($td);
 
 	$td = document.createElement("td");
+	$td.setAttribute("id","name");
 	$td.innerHTML = '<a onclick="alert(' +'\''+name+'\''+ ');" >'+ name+ '</a>';
 	//$td.appendChild(document.createTextNode(name));
 	$tr.appendChild($td);
