@@ -7,6 +7,7 @@
 <script language="JavaScript" src="js/profileOperations.js" type="text/javascript"> </script>
 
 <script type="text/javascript" src="js/jQuery-1.10.2.js"></script>
+<script type="text/javascript" src="js/DOMMutationLogger.js"></script>
 <script type="text/javascript">
 
 $(function(){
@@ -18,14 +19,19 @@ $(function(){
 	$( "body" ).bind(
 			"DOMNodeRemoved",
 			function( objEvent ){
-//				Append event to log display.
-				$( "#event-log" ).append(
-						"<li>" +
-						"Node removed: " +
-						$( objEvent.target ).text() +
-						"</li>"
-				);
-				objEvent.stopPropagation();
+				var eventTarget = objEvent.target;
+				console.log("Node removed:");
+				//console.log("eventTarget.text():"+ eventTarget.text());
+				console.log("eventTarget.innerHtml:"+ eventTarget.innerHTML);
+				console.log("eventTarget.children:"+ eventTarget.children);
+				console.log("eventTarget.id:"+ eventTarget.id);
+				console.log("eventTarget.firstElementChild:"+ eventTarget.firstElementChild);
+				console.log("eventTarget.lastElementChild:"+ eventTarget.lastElementChild);
+				console.log("-------------------------------------------------------------");
+				//Store log in datastructure in localStorage
+				
+				Log.storeAdd(eventTarget);
+				objEvent.preventDefault();
 				return false;
 			}
 	);
@@ -33,14 +39,11 @@ $(function(){
 	$( "body" ).bind(
 			"DOMNodeInserted",
 			function( objEvent ){
-					//Append event to log display.
-					$( "#event-log" ).append(
-						"<li>" +
+				console.log(
 						"Added: "+
-						$( objEvent.target ).text()+
-						"</li>"
+						$( objEvent.target ).text()
 					);
-					objEvent.stopPropagation();
+					objEvent.preventDefault();
 					return false;
 			}
 			
@@ -209,7 +212,7 @@ window.onbeforeunload = function() {
 };
 </script>
 
-<ul id="event-log" />
+
 
 </body>
 </html>

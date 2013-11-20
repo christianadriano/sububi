@@ -199,7 +199,6 @@ var Contacts = {
 			},
 			tableRemove: function(entry) {
 				Contacts.$table.removeChild(document.getElementById("entry-"+ entry.id));
-				//Why isn't this line raising a DOMNodeRemoved EVENT???????
 			}
 		};
 		Contacts.init();

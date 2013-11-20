@@ -1,13 +1,13 @@
 
 var Log = {
 		index: window.localStorage.getItem("DOMMutationLogger:index"),
-		$event_log: document.getElementById("event-log"),
+		//$event_log: document.getElementById("event-log"),
 
 		init: function() {
 			this.index=0;
 		},
 
-		storeAdd: function(entry) {
+		storeAdd: function storeAdd(entry) {
 			entry.id = DOMMutationLogger.index;
 			window.localStorage.setItem("DOMMutationLogger:index", ++DOMMutationLogger.index);
 			window.localStorage.setItem("DOMMutationLogger:"+ entry.id, JSON.stringify(entry));
