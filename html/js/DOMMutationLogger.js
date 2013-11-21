@@ -8,12 +8,9 @@ var Log = {
 		},
 
 		storeAdd: function storeAdd(entry) {
-			entry.id = DOMMutationLogger.index;
+			console.log("entered");
+			entry.id = Log.index;
 			window.localStorage.setItem("DOMMutationLogger:index", ++DOMMutationLogger.index);
-			window.localStorage.setItem("DOMMutationLogger:"+ entry.id, JSON.stringify(entry));
-		},
-		
-		storeEdit: function(entry) {
 			window.localStorage.setItem("DOMMutationLogger:"+ entry.id, JSON.stringify(entry));
 		},
 		

@@ -19,38 +19,34 @@ $(function(){
 	$( "body" ).bind(
 			"DOMNodeRemoved",
 			function( objEvent ){
-				var eventTarget = objEvent.target;
-				console.log("Node removed:");
-				//console.log("eventTarget.text():"+ eventTarget.text());
-				console.log("eventTarget.innerHtml:"+ eventTarget.innerHTML);
-				console.log("eventTarget.children:"+ eventTarget.children);
-				console.log("eventTarget.id:"+ eventTarget.id);
-				console.log("eventTarget.firstElementChild:"+ eventTarget.firstElementChild);
-				console.log("eventTarget.lastElementChild:"+ eventTarget.lastElementChild);
-				console.log("-------------------------------------------------------------");
-				//Store log in datastructure in localStorage
-				
-				Log.storeAdd(eventTarget);
-				objEvent.preventDefault();
+				logEvent(objEvent, "Node Added:");
 				return false;
 			}
 	);
 	
 	$( "body" ).bind(
 			"DOMNodeInserted",
-			function( objEvent ){
-				console.log(
-						"Added: "+
-						$( objEvent.target ).text()
-					);
-					objEvent.preventDefault();
-					return false;
+			function( objEvent ){	
+				logEvent(objEvent, "Node Added:");
+				return false;
 			}
-			
 	);
 			
 	
 });
+
+	function logEvent(event, text){
+		var eventTarget = event.target;
+		console.log("eventTarget.innerHtml:"+ eventTarget.innerHTML);
+		console.log("eventTarget.children:"+ eventTarget.children);
+		console.log("eventTarget.id:"+ eventTarget.id);
+		console.log("eventTarget.firstElementChild:"+ eventTarget.firstElementChild);
+		console.log("eventTarget.lastElementChild:"+ eventTarget.lastElementChild);
+		console.log("-------------------------------------------------------------");
+		
+		//Store log in datastructure in localStorage
+		Log.storeAdd(event);
+	}
 
 </script>
 
