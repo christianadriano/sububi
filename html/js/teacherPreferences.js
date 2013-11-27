@@ -200,7 +200,8 @@ var Contacts = {
 			tableRemove: function(entry) {
 				//Code to try to transport the line of code
 				var nodeMonitored = document.getElementById("entry-"+ entry.id);
-				nodeMonitored.setAttribute('line', getLine());
+				nodeMonitored.setAttribute('line',getLine());
+				
 				Contacts.$table.removeChild(nodeMonitored);
 			}
 		};
