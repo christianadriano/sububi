@@ -1,0 +1,38 @@
+<mockup version="1.0" skin="sketch" fontFace="Balsamiq Sans" measuredW="784" measuredH="469" mockupW="606" mockupH="459">
+  <controls>
+    <control controlID="0" controlTypeID="com.balsamiq.mockups::BrowserWindow" x="178" y="10" w="606" h="459" measuredW="450" measuredH="400" zOrder="0" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>A%20Web%20Page%0Ahttp%3A//</text>
+      </controlProperties>
+    </control>
+    <control controlID="1" controlTypeID="com.balsamiq.mockups::Label" x="205" y="114" w="-1" h="-1" measuredW="89" measuredH="21" zOrder="1" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Hired%20Teachers</text>
+      </controlProperties>
+    </control>
+    <control controlID="2" controlTypeID="com.balsamiq.mockups::DataGrid" x="205" y="140" w="-1" h="-1" measuredW="320" measuredH="181" zOrder="2" locked="false" isInGroup="-1">
+      <controlProperties>
+        <rowHeight>32</rowHeight>
+        <text>Name%2C%20Last%20Name%2C%20Subject%2C%20Missing%20Next%20Day%0AFelipe%2C%20Chen%2C%20Math%2C%20%5Bx%5D%0AJohn%2C%20Beck%2C%20Biology%2C%20%0ASilvia%2C%20Huang%2C%20History%2C%20%0ALin%2C%20Liu%2C%20Geography%2C%20%5Bx%5D%0ARudolf%2C%20Stein%2C%20Math%2C%0A%7B0L%2C0L%2CC%2CC%7D</text>
+      </controlProperties>
+    </control>
+    <control controlID="3" controlTypeID="com.balsamiq.mockups::VCurly" x="552" y="150" w="-1" h="-1" measuredW="180" measuredH="140" zOrder="3" locked="false" isInGroup="-1">
+      <controlProperties>
+        <color>10027008</color>
+        <text>Only%20last%20column%20is%20editable</text>
+      </controlProperties>
+    </control>
+    <control controlID="4" controlTypeID="com.balsamiq.mockups::Button" x="606" y="347" w="-1" h="-1" measuredW="52" measuredH="27" zOrder="4" locked="false" isInGroup="-1">
+      <controlProperties>
+        <text>Save</text>
+      </controlProperties>
+    </control>
+    <control controlID="5" controlTypeID="com.balsamiq.mockups::Button" x="692" y="347" w="-1" h="-1" measuredW="66" measuredH="27" zOrder="5" locked="false" isInGroup="-1">
+      <controlProperties>
+        <bold>true</bold>
+        <text>Cancel</text>
+      </controlProperties>
+    </control>
+    <control controlID="6" controlTypeID="com.balsamiq.mockups::HRule" x="205" y="336" w="565" h="-1" measuredW="100" measuredH="10" zOrder="6" locked="false" isInGroup="-1"/>
+  </controls>
+</mockup>
